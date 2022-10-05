@@ -27,12 +27,12 @@
 /// \file PhysicsList.hh
 /// \brief Definition of the B3::PhysicsList class
 
-#ifndef B3PhysicsList_h
-#define B3PhysicsList_h 1
+#ifndef B1PhysicsList_h
+#define B1PhysicsList_h 1
 
 #include "G4VModularPhysicsList.hh"
 
-namespace B3
+namespace B1
 {
 
 /// Modular physics list
@@ -47,9 +47,6 @@ class PhysicsList: public G4VModularPhysicsList
 public:
   PhysicsList();
   ~PhysicsList() override;
-  
-  // TODO maybe remove SetCuts?
-  void SetCuts() override;
 };
 
 }

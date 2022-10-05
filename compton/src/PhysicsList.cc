@@ -60,11 +60,4 @@ PhysicsList::~PhysicsList()
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void PhysicsList::SetCuts()
-{
-  G4VUserPhysicsList::SetCuts();
-}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
 }

@@ -34,7 +34,7 @@
 #include "G4RunManagerFactory.hh"
 #include "G4SteppingVerbose.hh"
 #include "G4UImanager.hh"
-
+#include "WriterG4/G4GDMLWriter.h"
 #include "G4VisExecutive.hh"
 #include "G4UIExecutive.hh"
 
@@ -44,16 +44,8 @@ using namespace B1;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-int main(int argc,char** argv)
-{
-  // Detect interactive mode (if no arguments) and define UI session
-  //
-  G4UIExecutive* ui = nullptr;
-  if ( argc == 1 ) { ui = new G4UIExecutive(argc, argv); }
-
-  // Optionally: choose a different Random engine...
-  // G4Random::setTheEngine(new CLHEP::MTwistEngine);
-
+int main(int argc, char** argv) {
+  G4UIExecutive* ui = new G4UIExecutive(argc, argv);
   //use G4SteppingVerboseWithUnits
   G4int precision = 4;
   G4SteppingVerbose::UseBestUnit(precision);
@@ -68,14 +60,34 @@ int main(int argc,char** argv)
   // Detector construction
   runManager->SetUserInitialization(new DetectorConstruction());
 
-  // Physics list  
+  // Physics list
   runManager->SetUserInitialization(new PhysicsList());
 
   // User action initialization
   runManager->SetUserInitialization(new ActionInitialization());
 
+  // Run simulation (I think)  
+  runManager->Initialize();
+
+  // scanning geometry tree
+  G4VPhysicalVolume* g4wv =
+    G4TransportationManager::GetTransportationManager()->
+    GetNavigatorForTracking()->GetWorldVolume();
+  
+  G4GDMLWriter g4writer("schema/gdml_2.0.xsd", "g4writertest.gdml");
+  
+  try
+  {
+    g4writer.DumpGeometryInfo(g4wv);
+  }
+  catch(std::logic_error &lerr)
+  {
+    std::cout << "Caught an exception: " 
+              << lerr.what () << std::endl;
+  }
+
+
   // Initialize visualization
-  //
   G4VisManager* visManager = new G4VisExecutive;
   // G4VisExecutive can take a verbosity argument - see /vis/verbose guidance.
   // G4VisManager* visManager = new G4VisExecutive("Quiet");
@@ -83,27 +95,18 @@ int main(int argc,char** argv)
 
   // Get the pointer to the User Interface manager
   G4UImanager* UImanager = G4UImanager::GetUIpointer();
+  
+  UImanager->ApplyCommand("/vis/open ATree");
+  UImanager->ApplyCommand("/vis/drawVolume");
+  UImanager->ApplyCommand("/vis/viewer/set/viewpointVector 1 1 1");
+  UImanager->ApplyCommand("/vis/viewer/flush");
 
-  // Process macro or start UI session
-  //
-  if ( ! ui ) {
-    // batch mode
-    G4String command = "/control/execute ";
-    G4String fileName = argv[1];
-    UImanager->ApplyCommand(command+fileName);
-  }
-  else {
-    // interactive mode
-    UImanager->ApplyCommand("/control/execute init_vis.mac");
-    ui->SessionStart();
-    delete ui;
-  }
-
+  ui->SessionStart();
   // Job termination
   // Free the store: user actions, physics_list and detector_description are
   // owned and deleted by the run manager, so they should not be deleted
   // in the main() program !
-
+  delete ui;
   delete visManager;
   delete runManager;
 }

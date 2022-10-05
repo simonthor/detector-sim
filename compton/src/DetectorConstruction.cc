@@ -90,68 +90,68 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   //
   // Small detector
   //
-  G4Material* smallDetectorMaterial = nist->FindOrBuildMaterial("G4_SODIUM_IODIDE");
-  G4ThreeVector smallDetectorPosition = G4ThreeVector(0., 0., 0.);
+  // G4Material* smallDetectorMaterial = nist->FindOrBuildMaterial("G4_SODIUM_IODIDE");
+  // G4ThreeVector smallDetectorPosition = G4ThreeVector(0., 0., 0.);
 
-   G4Tubs* smallDetector
-    = new G4Tubs("SmallDetector",  // Name
-                  0.*cm, // inner radius
-                  1.5 / 2 *cm,  // Outer radius
-                  2.36 / 2 *cm,  // Height in z direction / 2
-                  0.*deg,   // Start angle
-                  360.*deg);  // Spanning angle
+  //  G4Tubs* smallDetector
+  //   = new G4Tubs("SmallDetector",  // Name
+  //                 0.*cm, // inner radius
+  //                 1.5 / 2 *cm,  // Outer radius
+  //                 2.36 / 2 *cm,  // Height in z direction / 2
+  //                 0.*deg,   // Start angle
+  //                 360.*deg);  // Spanning angle
 
-  G4LogicalVolume* logicSmallDetector =
-    new G4LogicalVolume(smallDetector,         //its solid
-                        smallDetectorMaterial,          //its material
-                        "SmallDetector");           //its name
+  // G4LogicalVolume* logicSmallDetector =
+  //   new G4LogicalVolume(smallDetector,         //its solid
+  //                       smallDetectorMaterial,          //its material
+  //                       "SmallDetector");           //its name
 
-  new G4PVPlacement(0,                       //no rotation
-                    smallDetectorPosition,                    //at position
-                    logicSmallDetector,             //its logical volume
-                    "SmallDetector",                //its name
-                    logicWorld,                //its mother volume
-                    false,                   //no boolean operation
-                    0,                       //copy number
-                    checkOverlaps);          //overlaps checking
+  // new G4PVPlacement(0,                       //no rotation
+  //                   smallDetectorPosition,                    //at position
+  //                   logicSmallDetector,             //its logical volume
+  //                   "SmallDetector",                //its name
+  //                   logicWorld,                //its mother volume
+  //                   false,                   //no boolean operation
+  //                   0,                       //copy number
+  //                   checkOverlaps);          //overlaps checking
 
-  //
-  // Large detector
-  //
-  G4Material* largeDetectorMaterial = nist->FindOrBuildMaterial("G4_SODIUM_IODIDE"); // TODO check material
-  G4ThreeVector largeDetectorPosition = G4ThreeVector(0., 0., 0.);
+  // //
+  // // Large detector
+  // //
+  // G4Material* largeDetectorMaterial = nist->FindOrBuildMaterial("G4_SODIUM_IODIDE"); // TODO check material
+  // G4ThreeVector largeDetectorPosition = G4ThreeVector(0., 0., 0.);
 
-  G4double largeDetectorLength = 7.5*cm;
-  G4Tubs* largeDetector
-    = new G4Tubs("LargeDetector",  // Name
-                  0.*cm, // Inner radius
-                  5.8 / 2 *cm,  // Outer radius
-                  largeDetectorLength / 2,  // Height in z direction
-                  0.*deg,   // Rotation
-                  360.*deg);  // Span
+  // G4double largeDetectorLength = 7.5*cm;
+  // G4Tubs* largeDetector
+  //   = new G4Tubs("LargeDetector",  // Name
+  //                 0.*cm, // Inner radius
+  //                 5.8 / 2 *cm,  // Outer radius
+  //                 largeDetectorLength / 2,  // Height in z direction
+  //                 0.*deg,   // Rotation
+  //                 360.*deg);  // Span
 
-  // TODO Simulation should be run for different values of this angle
-  G4double angle = 90*deg;
+  // // TODO Simulation should be run for different values of this angle
+  // G4double angle = 90*deg;
   
-  G4RotationMatrix rotm = G4RotationMatrix();
-  rotm.rotateY(90*deg);
-  rotm.rotateZ(angle);
-  G4ThreeVector uz = G4ThreeVector(std::cos(angle),  std::sin(angle), 0.);
-  G4ThreeVector position = (17.62*cm + 5.81/2*cm + largeDetectorLength / 2)*uz;
-  G4Transform3D transform = G4Transform3D(rotm, position);
+  // G4RotationMatrix rotm = G4RotationMatrix();
+  // rotm.rotateY(90*deg);
+  // rotm.rotateZ(angle);
+  // G4ThreeVector uz = G4ThreeVector(std::cos(angle),  std::sin(angle), 0.);
+  // G4ThreeVector position = (17.62*cm + 5.81/2*cm + largeDetectorLength / 2)*uz;
+  // G4Transform3D transform = G4Transform3D(rotm, position);
   
-  G4LogicalVolume* logicLargeDetector =
-    new G4LogicalVolume(largeDetector,         //its solid
-                        largeDetectorMaterial,          //its material
-                        "LargeDetector");           //its name
+  // G4LogicalVolume* logicLargeDetector =
+  //   new G4LogicalVolume(largeDetector,         //its solid
+  //                       largeDetectorMaterial,          //its material
+  //                       "LargeDetector");           //its name
 
-  new G4PVPlacement(transform,                       //rotation
-                    logicLargeDetector,             //its logical volume
-                    "LargeDetector",                //its name
-                    logicWorld,                //its mother volume
-                    false,                   //no boolean operation
-                    0,                       //copy number
-                    checkOverlaps);          //overlaps checking
+  // new G4PVPlacement(transform,                       //rotation
+  //                   logicLargeDetector,             //its logical volume
+  //                   "LargeDetector",                //its name
+  //                   logicWorld,                //its mother volume
+  //                   false,                   //no boolean operation
+  //                   0,                       //copy number
+  //                   checkOverlaps);          //overlaps checking
 
   // TODO
   // Lead block (alternatively only model that particles move in a certain cone in a random direction)
@@ -177,7 +177,6 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   // TODO change code below. Maybe/probably remove
   // Set large detector as scoring volume
   //
-  fScoringVolume = logicLargeDetector;
 
   //
   //always return the physical World
