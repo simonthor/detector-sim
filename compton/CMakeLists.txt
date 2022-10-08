@@ -40,14 +40,7 @@ target_link_libraries(exampleB1 ${Geant4_LIBRARIES})
 # build B1. This is so that we can run the executable directly because it
 # relies on these scripts being in the current working directory.
 #
-set(EXAMPLEB1_SCRIPTS
-  exampleB1.in
-  exampleB1.out
-  init_vis.mac
-  run1.mac
-  run2.mac
-  vis.mac
-  )
+set(EXAMPLEB1_SCRIPTS)
 
 foreach(_script ${EXAMPLEB1_SCRIPTS})
   configure_file(
@@ -62,8 +55,3 @@ endforeach()
 # example standalone
 #
 add_custom_target(B1 DEPENDS exampleB1)
-
-#----------------------------------------------------------------------------
-# Install the executable to 'bin' directory under CMAKE_INSTALL_PREFIX
-#
-install(TARGETS exampleB1 DESTINATION bin)

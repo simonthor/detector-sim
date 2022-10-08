@@ -1,0 +1,28 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "/home/simon/miniconda3/envs/detector-sim/include",
+                "/home/simon/miniconda3/envs/detector-sim/include/Geant4",
+                "${workspaceRoot}/compton",
+                "${workspaceRoot}/compton/include"
+            ],
+            "defines": [],
+            "intelliSenseMode": "${default}",
+            "browse": {
+                "path": [
+                    "/usr/include",
+                    "/usr/local/include",
+                    "${workspaceRoot}"
+                ],
+                "limitSymbolsToIncludedHeaders": true,
+                "databaseFilename": ""
+            },
+            "compilerPath": "/home/simon/miniconda3/envs/detector-sim/bin/gcc",
+            "cStandard": "gnu17",
+            "cppStandard": "gnu++14"
+        }
+    ],
+    "version": 4
+}

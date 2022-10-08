@@ -1,29 +1,3 @@
-//
-// ********************************************************************
-// * License and Disclaimer                                           *
-// *                                                                  *
-// * The  Geant4 software  is  copyright of the Copyright Holders  of *
-// * the Geant4 Collaboration.  It is provided  under  the terms  and *
-// * conditions of the Geant4 Software License,  included in the file *
-// * LICENSE and available at  http://cern.ch/geant4/license .  These *
-// * include a list of copyright holders.                             *
-// *                                                                  *
-// * Neither the authors of this software system, nor their employing *
-// * institutes,nor the agencies providing financial support for this *
-// * work  make  any representation or  warranty, express or implied, *
-// * regarding  this  software system or assume any liability for its *
-// * use.  Please see the license in the file  LICENSE  and URL above *
-// * for the full disclaimer and the limitation of liability.         *
-// *                                                                  *
-// * This  code  implementation is the result of  the  scientific and *
-// * technical work of the GEANT4 collaboration.                      *
-// * By using,  copying,  modifying or  distributing the software (or *
-// * any work based  on the software)  you  agree  to acknowledge its *
-// * use  in  resulting  scientific  publications,  and indicate your *
-// * acceptance of all terms of the Geant4 Software license.          *
-// ********************************************************************
-//
-//
 /// \file DetectorConstruction.cc
 /// \brief Implementation of the B1::DetectorConstruction class
 
@@ -65,7 +39,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   //
   // World
   //
-  G4double world_sizeXY = 50*cm, world_sizeZ = 20*cm;
+  G4double world_sizeXY = 60*cm, world_sizeZ = 20*cm;
   G4Material* world_mat = nist->FindOrBuildMaterial("G4_AIR");
 
   G4Box* solidWorld =
@@ -90,93 +64,125 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   //
   // Small detector
   //
-  // G4Material* smallDetectorMaterial = nist->FindOrBuildMaterial("G4_SODIUM_IODIDE");
-  // G4ThreeVector smallDetectorPosition = G4ThreeVector(0., 0., 0.);
+  // TODO introduce doping of TL into the material
+  G4Material* smallDetectorMaterial = nist->FindOrBuildMaterial("G4_SODIUM_IODIDE");
+  G4ThreeVector smallDetectorPosition = G4ThreeVector(0., 0., 0.);
 
-  //  G4Tubs* smallDetector
-  //   = new G4Tubs("SmallDetector",  // Name
-  //                 0.*cm, // inner radius
-  //                 1.5 / 2 *cm,  // Outer radius
-  //                 2.36 / 2 *cm,  // Height in z direction / 2
-  //                 0.*deg,   // Start angle
-  //                 360.*deg);  // Spanning angle
+   G4Tubs* smallDetector
+    = new G4Tubs("SmallDetector",  // Name
+                  0.*cm, // inner radius
+                  1.5 / 2 *cm,  // Outer radius
+                  2.36 / 2 *cm,  // Height in z direction / 2
+                  0.*deg,   // Start angle
+                  360.*deg);  // Spanning angle
 
-  // G4LogicalVolume* logicSmallDetector =
-  //   new G4LogicalVolume(smallDetector,         //its solid
-  //                       smallDetectorMaterial,          //its material
-  //                       "SmallDetector");           //its name
+  G4LogicalVolume* logicSmallDetector =
+    new G4LogicalVolume(smallDetector,         //its solid
+                        smallDetectorMaterial,          //its material
+                        "SmallDetector");           //its name
 
-  // new G4PVPlacement(0,                       //no rotation
-  //                   smallDetectorPosition,                    //at position
-  //                   logicSmallDetector,             //its logical volume
-  //                   "SmallDetector",                //its name
-  //                   logicWorld,                //its mother volume
-  //                   false,                   //no boolean operation
-  //                   0,                       //copy number
-  //                   checkOverlaps);          //overlaps checking
+  new G4PVPlacement(0,                       //no rotation
+                    smallDetectorPosition,                    //at position
+                    logicSmallDetector,             //its logical volume
+                    "SmallDetector",                //its name
+                    logicWorld,                //its mother volume
+                    false,                   //no boolean operation
+                    0,                       //copy number
+                    checkOverlaps);          //overlaps checking
 
-  // //
-  // // Large detector
-  // //
-  // G4Material* largeDetectorMaterial = nist->FindOrBuildMaterial("G4_SODIUM_IODIDE"); // TODO check material
-  // G4ThreeVector largeDetectorPosition = G4ThreeVector(0., 0., 0.);
-
-  // G4double largeDetectorLength = 7.5*cm;
-  // G4Tubs* largeDetector
-  //   = new G4Tubs("LargeDetector",  // Name
-  //                 0.*cm, // Inner radius
-  //                 5.8 / 2 *cm,  // Outer radius
-  //                 largeDetectorLength / 2,  // Height in z direction
-  //                 0.*deg,   // Rotation
-  //                 360.*deg);  // Span
-
-  // // TODO Simulation should be run for different values of this angle
-  // G4double angle = 90*deg;
-  
-  // G4RotationMatrix rotm = G4RotationMatrix();
-  // rotm.rotateY(90*deg);
-  // rotm.rotateZ(angle);
-  // G4ThreeVector uz = G4ThreeVector(std::cos(angle),  std::sin(angle), 0.);
-  // G4ThreeVector position = (17.62*cm + 5.81/2*cm + largeDetectorLength / 2)*uz;
-  // G4Transform3D transform = G4Transform3D(rotm, position);
-  
-  // G4LogicalVolume* logicLargeDetector =
-  //   new G4LogicalVolume(largeDetector,         //its solid
-  //                       largeDetectorMaterial,          //its material
-  //                       "LargeDetector");           //its name
-
-  // new G4PVPlacement(transform,                       //rotation
-  //                   logicLargeDetector,             //its logical volume
-  //                   "LargeDetector",                //its name
-  //                   logicWorld,                //its mother volume
-  //                   false,                   //no boolean operation
-  //                   0,                       //copy number
-  //                   checkOverlaps);          //overlaps checking
-
-  // TODO
-  // Lead block (alternatively only model that particles move in a certain cone in a random direction)
   //
-  // G4Box* leadBlock1 =
-  //   new G4Box("leadBlock",                       //its name
-  //      0.5*world_sizeXY, 0.5*world_sizeXY, 0.5*world_sizeZ);     //its size
-
-  // G4LogicalVolume* logicWorld =
-  //   new G4LogicalVolume(solidWorld,          //its solid
-  //                       world_mat,           //its material
-  //                       "World");            //its name
-
-  // G4VPhysicalVolume* physWorld =
-  //   new G4PVPlacement(0,                     //no rotation
-  //                     G4ThreeVector(),       //at (0,0,0)
-  //                     logicWorld,            //its logical volume
-  //                     "World",               //its name
-  //                     0,                     //its mother  volume
-  //                     false,                 //no boolean operation
-  //                     0,                     //copy number
-  //                     checkOverlaps);        //overlaps checking
-  // TODO change code below. Maybe/probably remove
-  // Set large detector as scoring volume
+  // Large detector
   //
+  G4Material* largeDetectorMaterial = nist->FindOrBuildMaterial("G4_SODIUM_IODIDE");
+  G4ThreeVector largeDetectorPosition = G4ThreeVector(0., 0., 0.);
+  G4double largeDetectorFoilThickness = 0.4*mm;
+  G4double largeDetectorLength = 7.5*cm - largeDetectorFoilThickness;
+  G4double largeDetectorRadius = 5.1/2*cm;
+  
+  G4Tubs* largeDetector
+    = new G4Tubs("LargeDetector",  // Name
+                  0.*cm, // Inner radius
+                  largeDetectorRadius,  // Outer radius
+                  largeDetectorLength / 2,  // Height in z direction
+                  0.*deg,   // Rotation
+                  360.*deg);  // Span
+
+  // TODO Simulation should be run for different values of this angle
+  G4double angle = 90*deg;
+  
+  G4double distanceToLargeDetector = 17.62*cm;;
+  G4RotationMatrix rotm = G4RotationMatrix();
+  rotm.rotateY(90*deg);
+  rotm.rotateZ(angle);
+  G4ThreeVector uz = G4ThreeVector(std::cos(angle),  std::sin(angle), 0.);
+  G4ThreeVector position = (distanceToLargeDetector + largeDetectorFoilThickness + largeDetectorLength / 2)*uz;
+  G4Transform3D largeDetectorTransform = G4Transform3D(rotm, position);
+  
+  G4LogicalVolume* logicLargeDetector =
+    new G4LogicalVolume(largeDetector,         //its solid
+                        largeDetectorMaterial,          //its material
+                        "LargeDetector");           //its name
+
+  new G4PVPlacement(largeDetectorTransform,                       //rotation
+                    logicLargeDetector,             //its logical volume
+                    "LargeDetector",                //its name
+                    logicWorld,                //its mother volume
+                    false,                   //no boolean operation
+                    0,                       //copy number
+                    checkOverlaps);          //overlaps checking
+  
+  //
+  // Large detector outer foil
+  //
+  G4Material* largeDetectorFoilMaterial = nist->FindOrBuildMaterial("G4_Al");
+  G4Tubs* largeDetectorFoil
+    = new G4Tubs("LargeDetectorFoil",  // Name
+                  largeDetectorRadius, // Inner radius
+                  largeDetectorRadius + largeDetectorFoilThickness,  // Outer radius
+                  largeDetectorLength / 2,  // Height in z direction
+                  0.*deg,   // Rotation
+                  360.*deg);  // Span
+  
+  G4LogicalVolume* logicLargeDetectorFoil =
+    new G4LogicalVolume(largeDetectorFoil,         //its solid
+                        largeDetectorFoilMaterial,          //its material
+                        "LargeDetectorFoil");           //its name
+
+  new G4PVPlacement(largeDetectorTransform,                       //rotation
+                    logicLargeDetectorFoil,             //its logical volume
+                    "LargeDetectorFoil",                //its name
+                    logicWorld,                //its mother volume
+                    false,                   //no boolean operation
+                    0,                       //copy number
+                    checkOverlaps);          //overlaps checking
+
+  //
+  // Large detector front foil
+  //
+  G4Material* largeDetectorFrontFoilMaterial = nist->FindOrBuildMaterial("G4_Al");
+  G4Tubs* largeDetectorFrontFoil
+    = new G4Tubs("LargeDetectorFrontFoil",  // Name
+                  0, // Inner radius
+                  largeDetectorRadius + largeDetectorFoilThickness,  // Outer radius
+                  largeDetectorFoilThickness / 2,  // Height in z direction
+                  0.*deg,   // Rotation
+                  360.*deg);  // Span
+  
+  G4LogicalVolume* logicLargeDetectorFrontFoil =
+    new G4LogicalVolume(largeDetectorFrontFoil,         //its solid
+                        largeDetectorFrontFoilMaterial,          //its material
+                        "LargeDetectorFrontFoil");           //its name
+
+
+  G4ThreeVector frontFoilPosition = (distanceToLargeDetector + largeDetectorFoilThickness / 2)*uz;
+  G4Transform3D frontFoilTransform = G4Transform3D(rotm, frontFoilPosition);
+  new G4PVPlacement(frontFoilTransform,                       //rotation
+                    logicLargeDetectorFrontFoil,             //its logical volume
+                    "LargeDetectorFrontFoil",                //its name
+                    logicWorld,                //its mother volume
+                    false,                   //no boolean operation
+                    0,                       //copy number
+                    checkOverlaps);          //overlaps checking
 
   //
   //always return the physical World
