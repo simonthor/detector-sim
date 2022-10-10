@@ -12,6 +12,8 @@ SensitiveDetector::~SensitiveDetector()
 G4bool SensitiveDetector::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {   
     aStep->GetTrack()->SetTrackStatus(fStopAndKill);
+    // Continue if the particle is not a photon
+    if (aStep->GetTrack()->GetDefinition()->GetParticleName() != "gamma") return true;
     // Get energy of particle and write to file
     const G4VTouchable *detector = aStep->GetPreStepPoint()->GetTouchable();
     // Write energy and angle to file

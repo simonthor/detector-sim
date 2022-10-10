@@ -189,9 +189,10 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   //
   G4Material* leadMaterial = nist->FindOrBuildMaterial("G4_Pb");
   G4double leadThickness = 4.55*cm;
+  G4double distanceToSource = 24.4*cm;
   G4Tubs* lead = new G4Tubs("lead",  // Name
-                  0.5*cm, // inner radius
-                  10 / 2 *cm,  // Outer radius
+                  0.5* cm, // inner radius
+                  10 * cm / 2,  // Outer radius
                   leadThickness / 2,  // Height in z direction / 2
                   0.*deg,   // Start angle
                   360.*deg);  // Spanning angle
@@ -203,7 +204,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 
   G4RotationMatrix rotm = G4RotationMatrix();
   rotm.rotateY(90*deg);
-  G4Transform3D leadTransform = G4Transform3D(rotm, G4ThreeVector(24.4*cm - leadThickness / 2, 0., 0.));
+  G4Transform3D leadTransform = G4Transform3D(rotm, G4ThreeVector(distanceToSource - leadThickness / 2, 0., 0.));
   
   new G4PVPlacement(leadTransform,
                     logicLead,             //its logical volume

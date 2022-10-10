@@ -17,6 +17,7 @@
 #include "G4ParticleDefinition.hh"
 #include "G4SystemOfUnits.hh"
 #include "Randomize.hh"
+#include "G4IonTable.hh"
 
 /// The primary generator action class with particle gun.
 ///

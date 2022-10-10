@@ -5,16 +5,15 @@
 
 #include "G4DecayPhysics.hh"
 #include "G4EmStandardPhysics.hh"
+#include "G4RadioactiveDecayPhysics.hh"
 
 namespace B1
 {
 
 PhysicsList::PhysicsList()
 {
-  // Default physics TODO maybe remove
   RegisterPhysics(new G4DecayPhysics());
-
-  // EM physics
+  RegisterPhysics(new G4RadioactiveDecayPhysics());
   RegisterPhysics(new G4EmStandardPhysics());
 }
 
