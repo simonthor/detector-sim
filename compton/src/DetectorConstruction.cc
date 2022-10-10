@@ -96,9 +96,8 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   // Small detector
   //
   G4Material* smallDetectorMaterial = nist->FindOrBuildMaterial("G4_SODIUM_IODIDE");
-  G4ThreeVector smallDetectorPosition = G4ThreeVector(0., 0., 0.);
 
-   G4Tubs* smallDetector
+  G4Tubs* smallDetector
     = new G4Tubs("SmallDetector",  // Name
                   0.*cm, // inner radius
                   1.5 / 2 *cm,  // Outer radius
@@ -112,7 +111,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
                         "SmallDetector");           //its name
 
   new G4PVPlacement(0,                       //no rotation
-                    smallDetectorPosition,                    //at position
+                    G4ThreeVector(0., 0., 0.),                    //at position
                     logicSmallDetector,             //its logical volume
                     "SmallDetector",                //its name
                     logicWorld,                //its mother volume
@@ -184,6 +183,36 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
       placeDetector(angle, largeDetectorFoilThickness, largeDetectorLength, checkOverlaps, 
         logicLargeDetector, logicLargeDetectorFoil, logicLargeDetectorFrontFoil, logicWorld); 
   }
+
+  //
+  // Lead cylinder
+  //
+  G4Material* leadMaterial = nist->FindOrBuildMaterial("G4_Pb");
+  G4double leadThickness = 4.55*cm;
+  G4Tubs* lead = new G4Tubs("lead",  // Name
+                  0.5*cm, // inner radius
+                  10 / 2 *cm,  // Outer radius
+                  leadThickness / 2,  // Height in z direction / 2
+                  0.*deg,   // Start angle
+                  360.*deg);  // Spanning angle
+
+  G4LogicalVolume* logicLead =
+    new G4LogicalVolume(lead,         //its solid
+                        leadMaterial,          //its material
+                        "lead");           //its name
+
+  G4RotationMatrix rotm = G4RotationMatrix();
+  rotm.rotateY(90*deg);
+  G4Transform3D leadTransform = G4Transform3D(rotm, G4ThreeVector(24.4*cm - leadThickness / 2, 0., 0.));
+  
+  new G4PVPlacement(leadTransform,
+                    logicLead,             //its logical volume
+                    "lead",                //its name
+                    logicWorld,                //its mother volume
+                    false,                   //no boolean operation
+                    0,                       //copy number
+                    checkOverlaps);          //overlaps checking
+
   //
   //always return the physical World
   //
