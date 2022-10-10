@@ -6,16 +6,11 @@
 #include "G4DecayPhysics.hh"
 #include "G4EmStandardPhysics.hh"
 
-
 namespace B1
 {
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
 PhysicsList::PhysicsList()
 {
-  SetVerboseLevel(1);
-
   // Default physics TODO maybe remove
   RegisterPhysics(new G4DecayPhysics());
 

@@ -17,14 +17,12 @@ using namespace B1;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-int main(int argc, char** argv) {
-  G4UIExecutive* ui = new G4UIExecutive(argc, argv);
+int main(int, char** argv) {
   //use G4SteppingVerboseWithUnits
-  G4int precision = 4;
+  G4int precision = 0;
   G4SteppingVerbose::UseBestUnit(precision);
-
+  
   // Construct the default run manager
-  //
   auto* runManager =
     G4RunManagerFactory::CreateRunManager(G4RunManagerType::Default);
 
@@ -48,24 +46,18 @@ int main(int argc, char** argv) {
 
   // Get the pointer to the User Interface manager
   G4UImanager* UImanager = G4UImanager::GetUIpointer();
-  
-  UImanager->ApplyCommand("/vis/open HepRepFile");
-  UImanager->ApplyCommand("/vis/scene/create");
-  UImanager->ApplyCommand("/vis/scene/add/volume");
-  UImanager->ApplyCommand("/vis/sceneHandler/attach");
-  UImanager->ApplyCommand("/vis/scene/endOfEventAction accumulate 1000");
-  UImanager->ApplyCommand("/vis/scene/add/trajectories");
-  UImanager->ApplyCommand("/vis/scene/add/hits");
-  UImanager->ApplyCommand("/tracking/storeTrajectory 1");
 
-  UImanager->ApplyCommand("/run/initialize");
-  UImanager->ApplyCommand("/run/beamOn 100");
+  // batch mode
+  G4String command = "/control/execute ";
+  G4String fileName = argv[1];
+  UImanager->ApplyCommand(command+fileName);
+  
   // ui->SessionStart();
   // Job termination
   // Free the store: user actions, physics_list and detector_description are
   // owned and deleted by the run manager, so they should not be deleted
   // in the main() program !
-  delete ui;
+  // delete ui;
   delete visManager;
   delete runManager;
 }

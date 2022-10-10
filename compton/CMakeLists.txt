@@ -40,7 +40,10 @@ target_link_libraries(exampleB1 ${Geant4_LIBRARIES})
 # build B1. This is so that we can run the executable directly because it
 # relies on these scripts being in the current working directory.
 #
-set(EXAMPLEB1_SCRIPTS)
+set(
+  EXAMPLEB1_SCRIPTS
+  run.mac
+)
 
 foreach(_script ${EXAMPLEB1_SCRIPTS})
   configure_file(

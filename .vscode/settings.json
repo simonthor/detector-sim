@@ -1,3 +1,8 @@
 {
-    "cmake.sourceDirectory": "${workspaceFolder}/compton"
+    "cmake.sourceDirectory": "${workspaceFolder}/compton",
+    "files.associations": {
+        "*.plot": "yaml",
+        "*.dat": "yaml",
+        "iosfwd": "cpp"
+    }
 }

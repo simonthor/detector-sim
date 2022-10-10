@@ -2,7 +2,6 @@
 /// \brief Implementation of the B1::ActionInitialization class
 
 #include "ActionInitialization.hh"
-#include "PrimaryGeneratorAction.hh"
 
 namespace B1
 {

@@ -1,0 +1,15 @@
+/vis/open HepRepFile
+/vis/scene/create
+/vis/scene/add/volume
+/vis/sceneHandler/attach
+/vis/scene/endOfEventAction accumulate 1000
+/vis/scene/add/trajectories
+/vis/scene/add/hits
+/tracking/storeTrajectory 1
+/event/verbose 0
+/run/verbose 0
+/tracking/verbose 0
+/process/verbose 0
+/process/em/verbose 0
+/run/initialize
+/run/beamOn 100

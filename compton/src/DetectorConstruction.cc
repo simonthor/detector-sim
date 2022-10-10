@@ -3,16 +3,6 @@
 
 #include "DetectorConstruction.hh"
 
-#include "G4RunManager.hh"
-#include "G4NistManager.hh"
-#include "G4Box.hh"
-#include "G4Tubs.hh"
-#include "G4LogicalVolume.hh"
-#include "G4PVPlacement.hh"
-#include "G4RotationMatrix.hh"
-#include "G4Transform3D.hh"
-#include "G4SystemOfUnits.hh"
-
 namespace B1
 {
 
@@ -28,6 +18,47 @@ DetectorConstruction::~DetectorConstruction()
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
+void placeDetector(G4double angle, G4double largeDetectorFoilThickness, G4double largeDetectorLength, G4bool checkOverlaps,
+  G4LogicalVolume* logicLargeDetector, G4LogicalVolume* logicLargeDetectorFoil, G4LogicalVolume* logicLargeDetectorFrontFoil, G4LogicalVolume* logicWorld)
+{
+  G4double distanceToLargeDetector = 17.62*cm;;
+  G4RotationMatrix rotm = G4RotationMatrix();
+  rotm.rotateY(90*deg);
+  rotm.rotateZ(angle);
+  G4ThreeVector uz = G4ThreeVector(std::cos(angle),  std::sin(angle), 0.);
+  G4ThreeVector position = (distanceToLargeDetector + largeDetectorFoilThickness + largeDetectorLength / 2)*uz;
+  G4Transform3D largeDetectorTransform = G4Transform3D(rotm, position);
+
+  G4int copyNumber = std::round(angle / deg);
+  new G4PVPlacement(largeDetectorTransform,                       //rotation
+                    logicLargeDetector,             //its logical volume
+                    "LargeDetector",                //its name
+                    logicWorld,                //its mother volume
+                    false,                   //no boolean operation
+                    copyNumber,                       //copy number
+                    checkOverlaps);          //overlaps checking
+  
+  new G4PVPlacement(largeDetectorTransform,                       //rotation
+                    logicLargeDetectorFoil,             //its logical volume
+                    "LargeDetectorFoil",                //its name
+                    logicWorld,                //its mother volume
+                    false,                   //no boolean operation
+                    copyNumber,                       //copy number
+                    checkOverlaps);          //overlaps checking
+
+  G4ThreeVector frontFoilPosition = (distanceToLargeDetector + largeDetectorFoilThickness / 2)*uz;
+  G4Transform3D frontFoilTransform = G4Transform3D(rotm, frontFoilPosition);
+  new G4PVPlacement(frontFoilTransform,                       //rotation
+                    logicLargeDetectorFrontFoil,             //its logical volume
+                    "LargeDetectorFrontFoil",                //its name
+                    logicWorld,                //its mother volume
+                    false,                   //no boolean operation
+                    copyNumber,                       //copy number
+                    checkOverlaps);          //overlaps checking
+  
+}
+
+
 G4VPhysicalVolume* DetectorConstruction::Construct()
 {
   // Get nist material manager
@@ -39,7 +70,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   //
   // World
   //
-  G4double world_sizeXY = 60*cm, world_sizeZ = 20*cm;
+  G4double world_sizeXY = 60*cm, world_sizeZ = 10*cm;
   G4Material* world_mat = nist->FindOrBuildMaterial("G4_AIR");
 
   G4Box* solidWorld =
@@ -64,7 +95,6 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   //
   // Small detector
   //
-  // TODO introduce doping of TL into the material
   G4Material* smallDetectorMaterial = nist->FindOrBuildMaterial("G4_SODIUM_IODIDE");
   G4ThreeVector smallDetectorPosition = G4ThreeVector(0., 0., 0.);
 
@@ -94,11 +124,10 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   // Large detector
   //
   G4Material* largeDetectorMaterial = nist->FindOrBuildMaterial("G4_SODIUM_IODIDE");
-  G4ThreeVector largeDetectorPosition = G4ThreeVector(0., 0., 0.);
   G4double largeDetectorFoilThickness = 0.4*mm;
   G4double largeDetectorLength = 7.5*cm - largeDetectorFoilThickness;
   G4double largeDetectorRadius = 5.1/2*cm;
-  
+    
   G4Tubs* largeDetector
     = new G4Tubs("LargeDetector",  // Name
                   0.*cm, // Inner radius
@@ -107,30 +136,11 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
                   0.*deg,   // Rotation
                   360.*deg);  // Span
 
-  // TODO Simulation should be run for different values of this angle
-  G4double angle = 90*deg;
-  
-  G4double distanceToLargeDetector = 17.62*cm;;
-  G4RotationMatrix rotm = G4RotationMatrix();
-  rotm.rotateY(90*deg);
-  rotm.rotateZ(angle);
-  G4ThreeVector uz = G4ThreeVector(std::cos(angle),  std::sin(angle), 0.);
-  G4ThreeVector position = (distanceToLargeDetector + largeDetectorFoilThickness + largeDetectorLength / 2)*uz;
-  G4Transform3D largeDetectorTransform = G4Transform3D(rotm, position);
-  
-  G4LogicalVolume* logicLargeDetector =
+  logicLargeDetector =
     new G4LogicalVolume(largeDetector,         //its solid
                         largeDetectorMaterial,          //its material
                         "LargeDetector");           //its name
 
-  new G4PVPlacement(largeDetectorTransform,                       //rotation
-                    logicLargeDetector,             //its logical volume
-                    "LargeDetector",                //its name
-                    logicWorld,                //its mother volume
-                    false,                   //no boolean operation
-                    0,                       //copy number
-                    checkOverlaps);          //overlaps checking
-  
   //
   // Large detector outer foil
   //
@@ -147,14 +157,6 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     new G4LogicalVolume(largeDetectorFoil,         //its solid
                         largeDetectorFoilMaterial,          //its material
                         "LargeDetectorFoil");           //its name
-
-  new G4PVPlacement(largeDetectorTransform,                       //rotation
-                    logicLargeDetectorFoil,             //its logical volume
-                    "LargeDetectorFoil",                //its name
-                    logicWorld,                //its mother volume
-                    false,                   //no boolean operation
-                    0,                       //copy number
-                    checkOverlaps);          //overlaps checking
 
   //
   // Large detector front foil
@@ -173,17 +175,15 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
                         largeDetectorFrontFoilMaterial,          //its material
                         "LargeDetectorFrontFoil");           //its name
 
-
-  G4ThreeVector frontFoilPosition = (distanceToLargeDetector + largeDetectorFoilThickness / 2)*uz;
-  G4Transform3D frontFoilTransform = G4Transform3D(rotm, frontFoilPosition);
-  new G4PVPlacement(frontFoilTransform,                       //rotation
-                    logicLargeDetectorFrontFoil,             //its logical volume
-                    "LargeDetectorFrontFoil",                //its name
-                    logicWorld,                //its mother volume
-                    false,                   //no boolean operation
-                    0,                       //copy number
-                    checkOverlaps);          //overlaps checking
-
+  // Place detectors at every angle that has been measured in experiment.
+  for (G4double angle = 50.*deg; angle < 131.*deg; angle += 20.*deg) {
+      placeDetector(angle, largeDetectorFoilThickness, largeDetectorLength, checkOverlaps, 
+        logicLargeDetector, logicLargeDetectorFoil, logicLargeDetectorFrontFoil, logicWorld); 
+  }
+  for (G4double angle = -40.*deg; angle > -141.*deg; angle -= 20.*deg) {
+      placeDetector(angle, largeDetectorFoilThickness, largeDetectorLength, checkOverlaps, 
+        logicLargeDetector, logicLargeDetectorFoil, logicLargeDetectorFrontFoil, logicWorld); 
+  }
   //
   //always return the physical World
   //
@@ -192,4 +192,8 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
+void DetectorConstruction::ConstructSDandField() {
+  SensitiveDetector* largeDetectorSD = new SensitiveDetector("SensitiveDetector");
+  logicLargeDetector->SetSensitiveDetector(largeDetectorSD);
+}
 }
