@@ -46,3 +46,4 @@ _deps
 
 tutorial/
 compton/build/data
+*.heprep
